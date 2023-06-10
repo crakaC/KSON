@@ -69,6 +69,12 @@ class JSONStringTest : StringSpec({
              2nd
         """.trimIndent().escape() shouldBe "abc\\\"\\b\\f\\n\\r\\t\\uD834\\uDD1E\\\"def\n2nd"
     }
+
+    "demo" {
+        val input = "{\"language\":\"kotlin\"}"
+        val obj = JSON.parse(input)
+        println(obj["language"].value) // => kotlin
+    }
 })
 
 fun String.escape(): String {

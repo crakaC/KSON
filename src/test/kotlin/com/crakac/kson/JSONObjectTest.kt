@@ -38,8 +38,8 @@ class JSONObjectTest : StringSpec({
             }
         """.trimIndent()
         val result = JSON.parse(input) as JSONObject
-        result["grand-father"]["parent"]["child"]["grand-child"] shouldBe JSONNull
-        result["grand-mother"]["parent"]["child"]["grand-child"] shouldBe JSONNumber(1)
+        result["grand-father"]["parent"]["child"]["grand-child"].value shouldBe null
+        result["grand-mother"]["parent"]["child"]["grand-child"].value shouldBe 1
     }
 
     "missing name separator" {
@@ -66,6 +66,27 @@ class JSONObjectTest : StringSpec({
         """.trimIndent()
         shouldThrow<JSONException> {
             JSON.parse(input)
+        }
+    }
+
+    "duplicated key" {
+        val input = """
+            {
+                "key" : "value1",
+                "key" : "value2"
+            }
+        """.trimIndent()
+        shouldThrow<JSONException> {
+            JSON.parse(input)
+        }
+    }
+
+    "missing key" {
+        val json = JSON.parse("""
+            {"key" : "value"}
+        """.trimIndent())
+        shouldThrow<JSONException> {
+            json["not a kay"]
         }
     }
 })

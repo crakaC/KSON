@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import java.lang.IndexOutOfBoundsException
 
 class JSONArrayTest : StringSpec({
     "empty array" {
@@ -26,17 +27,27 @@ class JSONArrayTest : StringSpec({
             [1, null, "string", [{}], {"key": "value"}]
         """.trimIndent()
         val result = JSON.parse(input) as JSONArray
-        (result[0] as JSONNumber<*>).value shouldBe 1
-        result[1].shouldBeInstanceOf<JSONNull>()
-        (result[2] as JSONString).value shouldBe "string"
-        result[3].shouldBeInstanceOf<JSONObject>()
-        val innerObject = result[4] as JSONObject
-        (innerObject["key"] as JSONString).value shouldBe "value"
+        result[0].value shouldBe 1
+        result[1].value shouldBe null
+        result[2].value shouldBe "string"
+        result[3][0].shouldBeInstanceOf<JSONObject>()
+        result[4]["key"].value shouldBe "value"
     }
 
     "nested array" {
         val input = "[[[3]], [2], 1]"
         val result = JSON.parse(input)
-        result[0][0][0] shouldBe JSONNumber(3)
+        result[0][0][0].value shouldBe 3
+    }
+
+    "index out of bounds" {
+        shouldThrow<IndexOutOfBoundsException> {
+            val array = JSON.parse(
+                """
+                    [0]
+                """.trimIndent()
+            )
+            array[1]
+        }
     }
 })

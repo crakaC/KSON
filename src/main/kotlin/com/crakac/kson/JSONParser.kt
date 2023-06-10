@@ -51,22 +51,6 @@ class JSONParser {
         return input.substring(start)
     }
 
-    private fun consume(char: Char): Boolean {
-        return if (input[pos] == char) {
-            pos++
-            true
-        } else {
-            false
-        }
-    }
-
-    private fun expect(char: Char) {
-        if (input[pos] != char) {
-            throw syntaxError("Expected $char")
-        }
-        pos++
-    }
-
     private fun readString(): JSONString {
         val sb = StringBuilder()
         var start = pos
@@ -161,15 +145,18 @@ class JSONParser {
 
     private fun readObject(): JSONObject {
         val result = JSONObject()
-        if (consume('}')) {
+        if (nextChar() == '}') {
             return result
         }
+        pos--
         while (true) {
             val name = nextValue()
             if (name !is JSONString) {
                 throw syntaxError("name must be string")
             }
-            expect(':')
+            if (nextChar() != ':') {
+                throw syntaxError("Expected ':'")
+            }
             result[name.value] = nextValue()
             when (nextChar()) {
                 '}' -> return result
@@ -181,7 +168,8 @@ class JSONParser {
 
     private fun readArray(): JSONArray {
         val result = JSONArray()
-        if (consume(']')) return result
+        if (nextChar() == ']') return result
+        pos--
         while (true) {
             result.add(nextValue())
             when (nextChar()) {

@@ -1,6 +1,8 @@
 package com.crakac.kson
 
-sealed interface JSONValue
+sealed interface JSONValue {
+    val value: Any?
+}
 
 operator fun JSONValue.get(key: Any): JSONValue {
     return when (this) {

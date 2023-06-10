@@ -1,6 +1,8 @@
 package com.crakac.kson
 
 data class JSONArray(private val array: MutableList<JSONValue> = mutableListOf()) : JSONValue {
+    override val value: List<JSONValue>
+        get() = array.toList()
 
     fun add(e: JSONValue) {
         array.add(e)

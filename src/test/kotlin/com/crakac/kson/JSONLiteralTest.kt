@@ -16,22 +16,22 @@ class JSONLiteralTest : StringSpec({
         result.shouldBeInstanceOf<JSONNull>()
     }
     "true" {
-        val result = JSON.parse("true") as JSONBool
+        val result = JSON.parse("true")
         result.value shouldBe true
     }
     "false" {
-        val result = JSON.parse("false") as JSONBool
+        val result = JSON.parse("false")
         result.value shouldBe false
     }
     "integer" {
         checkAll<Long> {
-            val result = JSON.parse(it.toString()) as JSONNumber<*>
+            val result = JSON.parse(it.toString())
             result.value shouldBe it
         }
     }
     "floating point" {
         checkAll<Double> {
-            val result = JSON.parse(it.toString()) as JSONNumber<*>
+            val result = JSON.parse(it.toString())
             result.value shouldBe it
         }
     }
