@@ -2,11 +2,11 @@ package com.crakac.kson
 
 data class JSONObject(
     private val members: MutableMap<String, JSONValue> = mutableMapOf()
-) : JSONValue {
+) : JSONValue, MutableMap<String, JSONValue> by members {
     override val value: Map<String, JSONValue>
-        get() = members
+        get() = LinkedHashMap(members)
 
-    operator fun get(key: String): JSONValue {
+    override operator fun get(key: String): JSONValue {
         return members[key] ?: throw JSONException("$key is not found")
     }
 
@@ -16,6 +16,4 @@ data class JSONObject(
         }
         members[key] = token
     }
-
-    val size: Int get() = members.size
 }

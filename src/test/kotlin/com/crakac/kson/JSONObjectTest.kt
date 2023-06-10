@@ -82,9 +82,11 @@ class JSONObjectTest : StringSpec({
     }
 
     "missing key" {
-        val json = JSON.parse("""
+        val json = JSON.parse(
+            """
             {"key" : "value"}
-        """.trimIndent())
+        """.trimIndent()
+        )
         shouldThrow<JSONException> {
             json["not a kay"]
         }

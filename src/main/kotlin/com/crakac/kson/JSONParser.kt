@@ -1,6 +1,6 @@
 package com.crakac.kson
 
-// https://www.ietf.org/rfc/rfc4627.txt
+// https://www.ietf.org/rfc/rfc8259.txt
 // https://android.googlesource.com/platform/libcore/+/refs/heads/android13-platform-release/json/src/main/java/org/json/JSONTokener.java
 
 private const val Quote = '"'
@@ -98,12 +98,9 @@ class JSONParser {
         }
     }
 
-    fun nextValue(): JSONValue {
+    private fun nextValue(): JSONValue {
         return when (nextChar()) {
-            EOF -> {
-                throw syntaxError("End of input")
-            }
-
+            EOF -> throw syntaxError("End of input")
             '{' -> readObject()
             '[' -> readArray()
             Quote -> readString()
@@ -144,11 +141,11 @@ class JSONParser {
     }
 
     private fun readObject(): JSONObject {
-        val result = JSONObject()
         if (nextChar() == '}') {
-            return result
+            return JSONObject()
         }
         pos--
+        val obj = JSONObject()
         while (true) {
             val name = nextValue()
             if (name !is JSONString) {
@@ -157,9 +154,9 @@ class JSONParser {
             if (nextChar() != ':') {
                 throw syntaxError("Expected ':'")
             }
-            result[name.value] = nextValue()
+            obj[name.value] = nextValue()
             when (nextChar()) {
-                '}' -> return result
+                '}' -> return obj
                 ',' -> continue
                 else -> throw syntaxError("Unterminated object")
             }
