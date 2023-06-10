@@ -1,9 +1,8 @@
 A simple Kotlin JSON parser
 
-```
-    val input = "{\"language\":\"kotlin\"}"
-    val obj = JSON.parse(input)
-    println(obj["laguage"].value) // => kotlin
+```kotlin
+    val obj = JSON.parse("{\"language\":\"kotlin\"}")
+    println(obj["language"].value) // => kotlin
 ```
 
 ## References
